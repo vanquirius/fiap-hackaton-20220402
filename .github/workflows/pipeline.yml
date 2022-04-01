@@ -49,7 +49,8 @@ jobs:
   Build:
       name: Build
       runs-on: ubuntu-latest  
-      needs: [UnitTest,SonarCloud]
+	needs: [UnitTest]
+#      needs: [UnitTest,SonarCloud]
       steps: 
         - name: Checkout Repo
           uses: actions/checkout@v2
