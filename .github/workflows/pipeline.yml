@@ -58,22 +58,24 @@ jobs:
 #        - name: New Relic License
 #          run: sed -i "s/licensekey/${{ secrets.NEW_RELIC_LICENSE_KEY }}/g" Dockerfile
 
-#        - name: Login to Heroku Container registry
-#          env: 
-#            HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-#          run: heroku container:login
+        - name: Login to Heroku Container registry
+          env: 
+            HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          run: heroku container:login
 
 #        - name: Docker Image & Push Heroku Registry
 #          env:
 #            HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
 #          run: heroku container:push -a ${{ secrets.HEROKU_APP_NAME }} web
 
-#  Deploy:
+  Deploy:
+    needs: [Build]
 #    needs: [Build,SonarCloud]
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - name: Deploy Heroku
-#        env:
-#          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: git push heroku HEAD:main --force
 #        run: heroku container:release -a ${{ secrets.HEROKU_APP_NAME }} web
