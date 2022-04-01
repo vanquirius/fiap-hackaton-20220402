@@ -4,6 +4,8 @@
 # Müller Silva, Nicolas Osmundo, Roberto Ribeiro, Vinicius Montouro
 # 2022-04-02
 
+# teste
+
 from flask import Flask
 from flask_wtf.csrf import CSRFProtect
 import os
