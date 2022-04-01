@@ -16,7 +16,7 @@ csrf.init_app(app)
 
 @app.route("/")
 def pagina_inicial():
-    return "Hello World - Marcelo Ambrosio de Góes - rm341073"
+    return "Hello Hackaton!"
 
 if __name__ == '__main__':
 #    app.run()
