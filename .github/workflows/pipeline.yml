@@ -1,0 +1,78 @@
+# coding=utf-8
+# Hackaton FIAP
+# Enilson dos Santos Jr., Klaus Araújo, Lilian Barbosa, Marcelo Góes,
+# Müller Silva, Nicolas Osmundo, Roberto Ribeiro, Vinicius Montouro
+# 2022-04-02
+name: Hackaton FIAP
+
+# Evento que irá acionar a pipeline
+on: 
+  push:
+    branches:
+      - main
+
+jobs:
+  UnitTest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+
+      - name: Install requirements (1/2)
+        run:  pip install flask
+      
+      - name: Install requirements (2/2)
+        run: pip install flask-wtf
+
+      - name: Unit Test
+        run: python -m unittest -v test
+
+#  SonarCloud:
+#      name: SonarCloud
+#      runs-on: ubuntu-latest
+#      steps:
+#        - uses: actions/checkout@v2
+#          with:
+#            fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+#        - name: SonarCloud Scan
+#          uses: SonarSource/sonarcloud-github-action@master
+#          env:
+#            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+#            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  Build:
+      name: Build
+      runs-on: ubuntu-latest  
+      needs: [UnitTest,SonarCloud]
+      steps: 
+        - name: Checkout Repo
+          uses: actions/checkout@v2
+
+#        - name: New Relic License
+#          run: sed -i "s/licensekey/${{ secrets.NEW_RELIC_LICENSE_KEY }}/g" Dockerfile
+
+#        - name: Login to Heroku Container registry
+#          env: 
+#            HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+#          run: heroku container:login
+
+#        - name: Docker Image & Push Heroku Registry
+#          env:
+#            HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+#          run: heroku container:push -a ${{ secrets.HEROKU_APP_NAME }} web
+
+#  Deploy:
+#    needs: [Build,SonarCloud]
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Deploy Heroku
+#        env:
+#          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+#        run: heroku container:release -a ${{ secrets.HEROKU_APP_NAME }} web
