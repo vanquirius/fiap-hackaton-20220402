@@ -16,7 +16,9 @@ csrf.init_app(app)
 
 @app.route("/")
 def pagina_inicial():
-    return "Hello Hackaton!"
+    with open("html/index.html", mode="r") as f:
+        html_content = f.read()
+        return html_content
 
 if __name__ == '__main__':
 #    app.run()
