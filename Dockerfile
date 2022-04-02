@@ -7,6 +7,9 @@
 # Use uma Imagem Official do Python
 FROM python:rc-slim
 
+# Declarando a váriavel do nome do arquivo de configuração do NewRelic
+ENV NEW_RELIC_CONFIG_FILE=newrelic.ini  NEW_RELIC_LICENSE_KEY=licensekey
+
 # Definindo o diretório onde a aplicação será armazenada
 WORKDIR /app
 
@@ -17,4 +20,4 @@ COPY . /app
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
 # Garante que será iniciado a aplicação.
-CMD ["gunicorn", "app:app"]
+CMD ["newrelic-admin", "run-program", "gunicorn", "app:app"]
