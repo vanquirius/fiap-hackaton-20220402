@@ -57,15 +57,15 @@ jobs:
 #        - name: New Relic License
 #          run: sed -i "s/licensekey/${{ secrets.NEW_RELIC_LICENSE_KEY }}/g" Dockerfile
 
-#        - name: Login to Heroku Container registry
-#          env: 
-#            HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-#          run: heroku container:login
+        - name: Login to Heroku Container registry
+          env:
+            HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          run: heroku container:login
 
-#        - name: Docker Image & Push Heroku Registry
-#          env:
-#            HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-#          run: heroku container:push -a ${{ secrets.HEROKU_APP_NAME }} web
+        - name: Docker Image & Push Heroku Registry
+          env:
+            HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          run: heroku container:push -a ${{ secrets.HEROKU_APP_NAME }} web
 
 
 
@@ -74,33 +74,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      # Autenticação do Heroku CLI via API TOKEN
-      # https://devcenter.heroku.com/articles/authentication
-      - name: Heroku Login
-        run: | 
-            cat > ~/.netrc <<EOF
-              machine api.heroku.com
-                login $HEROKU_EMAIL
-                password $HEROKU_API_KEY
-              machine git.heroku.com
-                login $HEROKU_EMAIL
-                password $HEROKU_API_KEY
-            EOF
+      - name: Deploy Heroku
         env:
-            HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-            HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
-
-      # Adicionando o Repositório Remoto do Heroku para poder enviar o código da app
-      - name: Add Heroku Remote
-        run: heroku git:remote --app $HEROKU_APP_NAME
-        env:
-            HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
-
-      # Enviando o código da App para o Heroku fazer Deploy
-      - name: Push to Heroku & Deploy
-        run: git push heroku HEAD:main --force
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:release -a ${{ secrets.HEROKU_APP_NAME }} web
